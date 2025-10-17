@@ -1,5 +1,5 @@
 # get the development image from nvidia cuda 12.4 (using devel for full CUDA toolkit)
-FROM nvidia/cuda:12.4.1-devel-ubuntu22.04
+FROM nvidia/cuda:13.0.1-devel-ubuntu22.04
 
 LABEL name="hunyuan3d21" maintainer="hunyuan3d21"
 
@@ -50,12 +50,12 @@ ENV PATH="/workspace/miniconda3/envs/hunyuan3d21/bin:${PATH}"
 RUN conda config --set always_yes true
 
 RUN conda install Ninja
-RUN conda install cuda -c nvidia/label/cuda-12.4.1 -y
+RUN conda install cuda -c nvidia/label/cuda-13.0.1 -y
 
 # Update libstdcxx-ng to fix compatibility issues (auto-confirm)
 RUN conda install -c conda-forge libstdcxx-ng -y
 
-RUN pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cu124
+RUN pip install torch torchvision --index-url https://download.pytorch.org/whl/cu130
 
 # Clone Hunyuan3D-2.1 repository
 RUN git clone https://github.com/ydd0729/Hunyuan3D-2.1.git -b ydd0729-patch-1
@@ -69,7 +69,7 @@ RUN cd /workspace/Hunyuan3D-2.1/hy3dpaint/custom_rasterizer && \
     export TORCH_CUDA_ARCH_LIST="12.0" && \
     export CUDA_NVCC_FLAGS="-allow-unsupported-compiler" && \
     # Install with editable mode
-    pip install -e .
+    python setup.py install
 
 # Install DifferentiableRenderer
 RUN cd /workspace/Hunyuan3D-2.1/hy3dpaint/DifferentiableRenderer && \
